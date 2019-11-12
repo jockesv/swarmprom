@@ -1634,7 +1634,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\"}[5m])) by (container_label_com_docker_swarm_service_name)",
+          "expr": "sum(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\", container_label_com_docker_swarm_service_name!~\"mon_.*\"}[5m])) by (container_label_com_docker_swarm_service_name)",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "{{ container_label_com_docker_swarm_service_name }}",

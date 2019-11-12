@@ -2,7 +2,6 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:429",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -17,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1520585594614,
+  "iteration": 1573590427675,
   "links": [],
   "panels": [
     {
@@ -168,7 +167,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(count(container_tasks_state{container_label_com_docker_stack_namespace=~\".+\", container_label_com_docker_swarm_node_id=~\"$node_id\"}) by (container_label_com_docker_stack_namespace))",
+          "expr": "count(count(container_tasks_state{container_label_com_docker_stack_namespace!~\"mon*\", container_label_com_docker_swarm_node_id=~\"$node_id\"}) by (container_label_com_docker_stack_namespace))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -253,7 +252,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(count(container_tasks_state{container_label_com_docker_swarm_service_name=~\".+\", container_label_com_docker_swarm_node_id=~\"$node_id\"}) by (container_label_com_docker_swarm_service_name))",
+          "expr": "count(count(container_tasks_state{container_label_com_docker_swarm_service_name!~\"mon.*\", container_label_com_docker_swarm_node_id=~\"$node_id\"}) by (container_label_com_docker_swarm_service_name))",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A",
@@ -338,7 +337,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\"}[5m])) ",
+          "expr": "count(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\", container_label_com_docker_swarm_service_name!~\"mon_.*\"}[5m])) ",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A",
@@ -403,7 +402,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\"}[5m])) by (container_label_com_docker_swarm_service_name)",
+          "expr": "sum(rate(container_last_seen{container_label_com_docker_swarm_node_id=~\"$node_id\", container_label_com_docker_swarm_service_name!~\"mon_.*\"}[5m])) by (container_label_com_docker_swarm_service_name)",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "{{ container_label_com_docker_swarm_service_name }}",
@@ -445,7 +444,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -541,7 +544,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -587,7 +594,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\"}[1m])) by (container_label_com_docker_swarm_service_name) * 100 ",
+          "expr": "sum(irate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\", container_label_com_docker_swarm_service_name!~\"mon_.*\"}[1m])) by (container_label_com_docker_swarm_service_name) * 100 ",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{container_label_com_docker_swarm_service_name}}",
@@ -629,7 +636,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "cacheTimeout": null,
@@ -761,7 +772,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(10, sum(irate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\"}[$interval])) by (name)) * 100 ",
+          "expr": "topk(10, sum(irate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\", container_label_com_docker_swarm_service_name!~\"mon_.*\"}[$interval])) by (name)) * 100 ",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -803,7 +814,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -846,7 +861,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\"}) by (container_label_com_docker_swarm_service_name) ",
+          "expr": "sum(container_memory_usage_bytes{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\", container_label_com_docker_swarm_service_name!~\"mon.*\"}) by (container_label_com_docker_swarm_service_name) ",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Used {{container_label_com_docker_swarm_service_name}}",
@@ -854,7 +869,7 @@
           "step": 2
         },
         {
-          "expr": "sum(container_memory_cache{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\"}) by (container_label_com_docker_swarm_service_name) ",
+          "expr": "sum(container_memory_cache{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\", container_label_com_docker_swarm_service_name!~\"mon.*\"}) by (container_label_com_docker_swarm_service_name) ",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Cached {{container_label_com_docker_swarm_service_name}}",
@@ -896,7 +911,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "cacheTimeout": null,
@@ -1023,7 +1042,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(10, avg_over_time(container_memory_usage_bytes{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\"}[$interval]))",
+          "expr": "topk(10, avg_over_time(container_memory_usage_bytes{container_label_com_docker_swarm_node_id=~\"$node_id\", id=~\"/docker/.*\", container_label_com_docker_swarm_service_name!~\"mon.*\"}[$interval]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1065,7 +1084,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1108,7 +1131,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_receive_bytes_total{container_label_com_docker_swarm_node_id=~\"$node_id\"}[$interval])) by (container_label_com_docker_swarm_service_name)",
+          "expr": "sum(rate(container_network_receive_bytes_total{container_label_com_docker_swarm_node_id=~\"$node_id\", container_label_com_docker_swarm_service_name!~\"mon.*\"}[$interval])) by (container_label_com_docker_swarm_service_name)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{container_label_com_docker_swarm_service_name}}",
@@ -1150,7 +1173,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1193,7 +1220,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{container_label_com_docker_swarm_node_id=~\"$node_id\"}[$interval])) by (container_label_com_docker_swarm_service_name)",
+          "expr": "sum(rate(container_network_transmit_bytes_total{container_label_com_docker_swarm_node_id=~\"$node_id\", container_label_com_docker_swarm_service_name!~\"mon.*\"}[$interval])) by (container_label_com_docker_swarm_service_name)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{container_label_com_docker_swarm_service_name}}",
@@ -1236,7 +1263,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1325,7 +1356,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1416,7 +1451,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "cacheTimeout": null,
@@ -1586,7 +1625,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1674,7 +1717,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "columns": [
@@ -1707,7 +1754,7 @@
           "alias": "Time",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
-          "type": "hidden"
+          "type": "date"
         },
         {
           "alias": "",
@@ -1728,7 +1775,6 @@
         {
           "expr": "sum(engine_daemon_engine_info * on(instance) group_left(node_id) swarm_node_info) by (kernel, os, graphdriver, version, node_id)",
           "format": "table",
-          "instant": true,
           "intervalFactor": 2,
           "legendFormat": "",
           "refId": "A",
@@ -1737,11 +1783,11 @@
       ],
       "timeFrom": "1s",
       "title": "Docker Engine Info",
-      "transform": "timeseries_to_rows",
+      "transform": "table",
       "type": "table"
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 16,
   "style": "dark",
   "tags": [
@@ -1765,11 +1811,12 @@
         "query": "node_meta",
         "refresh": 2,
         "regex": "/node_id=\"([^\"]+)\"/",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "label_values({node_id=\"$tag\"},node_name)",
         "tags": [
-          "ofdocker",
-          "ofmon"
+          "as02",
+          "as01"
         ],
         "tagsQuery": "label_values(node_meta, node_name)",
         "type": "query",
@@ -1845,13 +1892,14 @@
         ],
         "query": "1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
         "refresh": 2,
+        "skipUrlSync": false,
         "type": "interval"
       }
     ]
   },
   "time": {
-    "from": "now-15m",
-    "to": "now"
+    "from": "2019-11-12T20:00:07.028Z",
+    "to": "2019-11-12T20:30:07.028Z"
   },
   "timepicker": {
     "refresh_intervals": [
