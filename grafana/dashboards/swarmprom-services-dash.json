@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1573590427675,
+  "iteration": 1573632246160,
   "links": [],
   "panels": [
     {
@@ -1787,7 +1787,7 @@
       "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 16,
   "style": "dark",
   "tags": [
@@ -1898,8 +1898,8 @@
     ]
   },
   "time": {
-    "from": "2019-11-12T20:00:07.028Z",
-    "to": "2019-11-12T20:30:07.028Z"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1929,5 +1929,5 @@
   "timezone": "",
   "title": "Docker Swarm Services",
   "uid": "zr_baSRmk",
-  "version": 1
+  "version": 2
 }
