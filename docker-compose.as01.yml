@@ -1,9 +1,9 @@
 version: "3.3"
 
 networks:
-  net:
-    driver: overlay
-    attachable: true
+  pipos_webnet:
+    external:
+      name: pipos_webnet
 
 volumes:
     prometheus: {}
@@ -24,7 +24,7 @@ services:
   dockerd-exporter:
     image: stefanprodan/caddy
     networks:
-      - net
+      - pipos_webnet
     environment:
       - DOCKER_GWBRIDGE_IP=172.18.0.1
     configs:
@@ -41,7 +41,7 @@ services:
   cadvisor:
     image: google/cadvisor
     networks:
-      - net
+      - pipos_webnet
     command: -logtostderr -docker_only
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -58,13 +58,17 @@ services:
           memory: 64M
 
   grafana:
-    image: stefanprodan/swarmprom-grafana:5.3.4
+    build:
+      context: ./
+      dockerfile: grafana/Dockerfile
+    image: ${REGISTRY}/swarmprom-grafana:5.3.4
     networks:
-      - net
+      - pipos_webnet
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://serviceapi.pipos.se/monitor/
       #- GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
       #- GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
       #- GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@test.com}
@@ -89,7 +93,7 @@ services:
   alertmanager:
     image: stefanprodan/swarmprom-alertmanager:v0.14.0
     networks:
-      - net
+      - pipos_webnet
     environment:
       - SLACK_URL=${SLACK_URL:-https://hooks.slack.com/services/TOKEN}
       - SLACK_CHANNEL=${SLACK_CHANNEL:-general}
@@ -114,7 +118,7 @@ services:
   unsee:
     image: cloudflare/unsee:v0.8.0
     networks:
-      - net
+      - pipos_webnet
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
     deploy:
@@ -124,7 +128,7 @@ services:
   node-exporter:
     image: stefanprodan/swarmprom-node-exporter:v0.16.0
     networks:
-      - net
+      - pipos_webnet
     environment:
       - NODE_ID={{.Node.ID}}
     volumes:
@@ -149,7 +153,7 @@ services:
   prometheus:
     image: stefanprodan/swarmprom-prometheus:v2.5.0
     networks:
-      - net
+      - pipos_webnet
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -181,7 +185,7 @@ services:
       - "9093:9093"
       - "9094:9094"
     networks:
-      - net
+      - pipos_webnet
     environment:
       - ADMIN_USER=${ADMIN_USER:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -204,4 +208,3 @@ services:
       interval: 5s
       timeout: 1s
       retries: 5
-
