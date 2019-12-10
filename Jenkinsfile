@@ -23,7 +23,7 @@ pipeline {
             }
             steps {
                 sh 'echo Deploy to test env'
-                sh 'docker-compose push'
+                sh 'docker-compose -f docker-compose.as01.yml push'
                 sh 'docker stack deploy -c docker-compose.as01.yml mon'
             }           
         }
