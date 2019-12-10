@@ -59,8 +59,7 @@ services:
 
   grafana:
     build:
-      context: ./
-      dockerfile: grafana/Dockerfile
+      context: ./grafana/
     image: ${REGISTRY}/swarmprom-grafana:5.3.4
     networks:
       - pipos_webnet

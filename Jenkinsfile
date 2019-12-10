@@ -6,7 +6,7 @@ pipeline {
                 REGISTRY = 'as01:6001'
             }
             steps {
-                sh 'docker-compose build'
+                sh 'docker-compose -f docker-compose.as01.yml build'
             }
         }
 
