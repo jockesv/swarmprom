@@ -2,6 +2,9 @@ pipeline {
     agent any
     stages {
         stage('build') {
+            environment {
+                REGISTRY = 'as01:6001'
+            }
             steps {
                 sh 'docker-compose build'
             }
@@ -16,7 +19,7 @@ pipeline {
 
         stage('deploy_test') {
             environment {
-                REGISTRY = 'as01:6000'
+                REGISTRY = 'as01:6001'
             }
             steps {
                 sh 'echo Deploy to test env'
