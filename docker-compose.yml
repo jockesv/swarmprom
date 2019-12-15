@@ -22,7 +22,7 @@ configs:
 
 services:
   dockerd-exporter:
-    image: stefanprodan/caddy
+    image: stefanprodan/caddy:0.10.10
     networks:
       - net
     environment:
@@ -39,7 +39,7 @@ services:
           memory: 64M
 
   cadvisor:
-    image: google/cadvisor
+    image: google/cadvisor:v0.32.0
     networks:
       - net
     command: -logtostderr -docker_only
@@ -174,7 +174,7 @@ services:
           memory: 128M
 
   caddy:
-    image: stefanprodan/caddy
+    image: stefanprodan/caddy:0.10.10
     ports:
       - "3000:3000"
       - "9090:9090"
